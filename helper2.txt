@@ -1,0 +1,53 @@
+Hello there!
+Today we are going to initiate a react project 'Budgetary'
+WHAT IS BUDGETARY
+As the name suggests, its a react project to help people track there budgets, expenses, notes, and many more other types or tracked items.
+What will be the main features of budgetary
+	- Expense tracking
+	- Notes keeping
+	- Budget making
+	- Budget sharing
+	- Notes & expense sharing
+
+WHERE TO START: 
+	starting a react project using npx
+	using the redux template
+	installing required dependencies 
+	running the project
+PROCEDURE
+	> start bash or your best terminal tool such as bash or cmd
+	% npx create-react-app budgetary --template redux
+	% npm i --save react-dom react-router-dom react-flip-move firebase react-ionicons bootstrap uiw @material-ui/core
+	% npm start
+ 	> Navigate to http://localhost:3000/ to view your app
+ 	...LETS SEE THIS VISUALLY....
+ - lets wait for the dependencies to install -- this dependencies will be used all the time throught the project
+ --- react-dom -> for the dom management
+ --- react-router-dom -> for routing purposes
+ --- react-flip-move -> for entry animations and scrolling animations
+ --- firebase -> database services and deployement
+ --- react-ionicons -> a range of various icons which we will need
+ --- bootstrap -> css framework to help us in fast development purposes
+ --- uiw -> advanced material ui components
+ --- material ui -> for ready made components
+
+&& I MISSED THIS LAST TWO SO LETS ADD THEM
+uiw and material ui core
+
+ --- lets wait for the two to install---
+ >>> Open vscode as it is better for react development purposes and open the project there
+>> that is our project with alot of files
+We shall delete some and make our project look nicer in structure
+
+>> our dependencies are installed
+LETS POWER UP OUR SERVER
+	% npm start
+
+>> We wait for it to fire up and 
+
+
+		==hurray!! our app is running on
+		http://localhost:3000/
+	-- This shows everything is well. We shall continue from here
+
+		THANK YOU FOR WATCHING. STAY TUNED FOR MORE!!

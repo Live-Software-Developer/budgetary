@@ -1,0 +1,17 @@
+.right-sidebar {
+  min-height: calc(100vh - 75px);
+}
+
+.right-sidebar-holder {
+  /* height: calc(100vh - 75px); */
+}
+
+.right-top {
+  overflow: hidden;
+}
+
+
+.w-datepicker {
+  max-width: 100% !important;
+  width: 100%;
+}

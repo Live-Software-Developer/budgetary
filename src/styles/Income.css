@@ -1,0 +1,16 @@
+.income-top {
+  background-color: var(--theme-primary-color);
+  border-radius: var(--theme-border-radius-larger);
+  /* color: var(--theme-color); */
+  color: white;
+}
+
+.money {
+  background-color: rgba(245, 245, 245, 0.384);
+  padding: 6px;
+  border-radius: var(--theme-border-radius);
+}
+
+.p-0 {
+  padding: 0 !important;
+}

@@ -1,57 +1,144 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
+import React, { useEffect, useMemo, useState, Suspense, lazy } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+
+
+import { useDispatch, useSelector } from 'react-redux'
+import { auth, onAuthStateChanged } from './app/firebaseConfig';
+import { logout, selectUser } from './features/user/UserSlice';
+import { closeModal, openModal, openSnackbar, selectModalState, selectSnackbarState } from './features/appController/AppSlice';
+
+import Alert from './components/alert/Alert';
+import { Snackbar } from '@mui/material';
+import { quick_actions, setter_func } from './Functions';
+
+import { Outlet } from 'react-router'
+import MainSkeleton from './components/skeleton/MainSkeleton';
+import NavbarSkeleton from './components/skeleton/NavbarSkeleton';
+import SidebarSkeleton from './components/skeleton/SidebarSkeleton';
+
 import './App.css';
+import './index.css';
+import './styles/LeftSidebar.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+const MakeAppRoutes = lazy(() =>
+  import('./Functions').then((mod) => ({
+    default: mod.MakeAppRoutes
+  }))
+)
+// import LeftSidebar from './components/LeftSidebar';
+const LeftSidebar = lazy(() => import('./components/LeftSidebar'));
+const Navbar = lazy(() => import('./components/Navbar'));
+
 
 function App() {
+
+  const dispatch = useDispatch()
+  // const status = useNetworkStatus()
+  const current_modal_state = useSelector(selectModalState)
+  const user = useSelector(selectUser)
+  const [modalState, setModalState] = useState(current_modal_state)
+
+  const current_snackbarstate_ = useSelector(selectSnackbarState)
+  const [current_snackbarstate, setCurrentSnackbarState] = useState(current_snackbarstate_)
+
+  // const { location } = useLocation();
+
+
+  const openCloseModal = (target_) => {
+    dispatch(
+      openModal(target_)
+    )
+  }
+
+  const closeModal_ = () => {
+    dispatch(
+      closeModal()
+    )
+  }
+
+
+  useEffect(() => {
+
+    if (!user) {
+      try {
+        const unsub = onAuthStateChanged(auth, userAuth => {
+          if (userAuth) {
+            setter_func(userAuth, dispatch)
+          }
+          else {
+            logout()
+          }
+
+        })
+
+        return unsub;
+
+      }
+      catch (err) {
+        // alert(err)
+        console.warn(err, 'an error occured')
+      }
+    }
+
+    closeModal_()
+    // dispatch(
+    //   closeSnackbar({ state: false, severity: '', message: '' })
+    // )
+
+  }, [])
+
+  useMemo(() => {
+    setModalState(current_modal_state)
+  }, [current_modal_state])
+
+  useMemo(() => {
+    setCurrentSnackbarState(current_snackbarstate_)
+  }, [current_snackbarstate_])
+
+  const closeSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    else {
+      dispatch(
+        openSnackbar({ state: false, severity: '', message: '' })
+      )
+    }
+
+  };
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Suspense fallback={<NavbarSkeleton />}>
+        <Navbar />
+      </Suspense>
+
+      <Snackbar open={current_snackbarstate.state} autoHideDuration={4000} onClick={e => closeSnackbar}>
+        <Alert onClose={closeSnackbar} severity={current_snackbarstate.severity} sx={{ width: '100%' }}>
+          {current_snackbarstate.message}
+        </Alert>
+      </Snackbar>
+
+      <div className="container-fluid position-relative top-70 h-100">
+        <div className="row h-100 position-relative">
+          <div className="col-md-3 position-relative d-none d-md-block pt-2 bg-white" style={{ zIndex: 10 }}>
+            <Suspense fallback={<SidebarSkeleton />}>
+              <LeftSidebar />
+            </Suspense>
+          </div>
+          <div className="col-md-9 h-100 position-relative" style={{ paddingBottom: '50px' }}>
+            <Suspense fallback={<MainSkeleton />}>
+              <MakeAppRoutes />
+            </Suspense>
+          </div>
+        </div>
+      </div>
+      <Outlet />
+    </BrowserRouter>
   );
 }
 
