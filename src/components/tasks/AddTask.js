@@ -9,10 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "../../features/user/UserSlice";
 import { opensnackbar_ } from "../../features/appController/QuickFunctions";
 import { Switch } from "uiw";
-import { IconButton, MenuItem, Select } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import { IoTrashBin } from "react-icons/io5";
-import { updateTasksInStore } from "../../Functions";
-import { db } from "../../app/firebaseConfig";
+import { getSingleDoc, updateTasksInStore } from "../../Functions";
+import { db, addDoc, updateDoc, serverTimestamp, collection, doc } from '../../app/firebaseConfig'
+import { useNavigate } from "react-router";
 
 function AddTask({ editing, taskID }) {
   const [title, setTitle] = useState('')
@@ -25,6 +26,7 @@ function AddTask({ editing, taskID }) {
 
   const dispatch = useDispatch()
   const user = useSelector(selectUser)
+  const navigate = useNavigate()
 
   const addnewSubTodo = () => {
     const newsubtodo = { ...singleTodo }
@@ -96,11 +98,13 @@ function AddTask({ editing, taskID }) {
         state,
         desc,
         subTodos,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        createdAt: serverTimestamp()
       }
 
       if (editing && editing === true) {
-        db.collection('tasks').doc(taskID).update(task).then(() => {
+
+        const doc__ref = doc(db, `tasks/${taskID}`);
+        updateDoc(doc__ref, task).then(fulfilled => {
           updateTasksInStore(dispatch, user.userID)
           opensnackbar_(dispatch, true, 'success', `You have updated the task.`)
           setSaving(false)
@@ -111,29 +115,23 @@ function AddTask({ editing, taskID }) {
         )
       }
       else {
-        db.collection('tasks').add({
-          ...task
-        }).then(() => {
-
-          db.collection('users').doc(user?.userID).update({
-            tasks: firebase.firestore.FieldValue.increment(1)
-          }).then(() => {
-            setSaving(false)
-            opensnackbar_(dispatch, true, 'success', `The task was successfully saved`)
-          })
-
-        }).catch(error => opensnackbar_(dispatch, true, 'error', `An error occurred while trying to save the task`))
+        addDoc(collection(db, 'tasks'), task).then(fallback => {
+          setSaving(false)
+          opensnackbar_(dispatch, true, 'success', `The task was successfully saved`)
+          updateTasksInStore(dispatch, user.userID)
+          navigate(-1)
+        }).catch(error => opensnackbar_(dispatch, true, 'error', `An error occurred while trying to save the task`)
+        )
       }
 
     }
 
-    updateTasksInStore(dispatch, user.userID)
   }
 
   useEffect(() => {
     if (editing && editing === true) {
-      db.collection('tasks').doc(taskID).onSnapshot(snapshot => {
-        const data = snapshot.data();
+      getSingleDoc('tasks', taskID).then(doc => {
+        const data = doc.data();
         setTitle(data.title);
         setState(data.state);
         setDesc(data.desc);
@@ -155,11 +153,11 @@ function AddTask({ editing, taskID }) {
           </div>
           <div className="col-md-6 my-2">
             <label className="mb-2"><strong>State</strong></label>
-            <Select className="form-control input_ shadow-none" disableUnderline={true} value={state} onChange={e => setState(e.target.value)}>
-              <MenuItem value='s'>Select state</MenuItem>
-              <MenuItem value='pending'>Pending</MenuItem>
-              <MenuItem value='finished'>Finished</MenuItem>
-            </Select>
+            <select className="form-control input_ shadow-none" value={state} onChange={e => setState(e.target.value)}>
+              <option value='s'>Select state</option>
+              <option value='pending'>Pending</option>
+              <option value='finished'>Finished</option>
+            </select>
           </div>
 
           <div className="col-md-12 my-2">
@@ -184,7 +182,7 @@ function AddTask({ editing, taskID }) {
           }
           <ReactFlipMove>
             {
-              subTodos.map((subtodo, index) => {
+              subTodos && subTodos.map((subtodo, index) => {
                 return (
                   <div key={subtodo.id}>
                     {renderSubTodo(subtodo, index)}
@@ -225,7 +223,7 @@ function AddTask({ editing, taskID }) {
 
 
       <div className="container py-3 d-flex justify-content-center">
-        <MotionButton title={editing && editing === true ? "Updating task" : "save task"} handler={saveTask} />
+        <MotionButton title={editing && editing === true ? "Update task" : "save task"} handler={saveTask} />
         {
           saving && <Loader size='large' />
         }

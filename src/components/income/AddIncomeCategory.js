@@ -2,14 +2,12 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { opensnackbar_ } from "../../features/appController/QuickFunctions"
 import { selectUser } from "../../features/user/UserSlice"
-
-import firebase from 'firebase/compat/app';
+import { db, addDoc, updateDoc, serverTimestamp, collection, doc, arrayUnion, getDocs, query, where } from '../../app/firebaseConfig'
 import { Loader } from "uiw"
 import { CardHeader, MotionButton } from "../MotionButton"
 import { StrongLabel } from "../LoaderLabel"
 import { MenuItem, Select } from "@material-ui/core"
 import { updateIncomesInStore } from "../../Functions"
-import { db } from "../../app/firebaseConfig"
 
 
 function AddIncomeCategory({ editingIncomeCategory, incomeCategoryID, editingIncome, incomeID }) {
@@ -40,11 +38,13 @@ function AddIncomeCategory({ editingIncomeCategory, incomeCategoryID, editingInc
         userID: user?.userID,
         categoryName,
         incomeSources: [],
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        createdAt: serverTimestamp()
       }
 
       if (editingIncomeCategory === true) {
-        db.collection('incomeCategories').doc(incomeCategoryID).update(income).then(() => {
+        const doc__ref = doc(db, `incomeCategories/${incomeCategoryID}`);
+        updateDoc(doc__ref, income).then(fulfilled => {
+
           setSavingCat(false)
           opensnackbar_(dispatch, true, 'success', 'Income category updated')
           updateIncomesInStore(dispatch, user?.userID)
@@ -53,14 +53,7 @@ function AddIncomeCategory({ editingIncomeCategory, incomeCategoryID, editingInc
         })
       }
       else {
-
-        db.collection('incomes').add({
-          ...income
-        }).then(() => {
-
-          // db.collection('users').doc(user?.userID).update({
-          //   todos: firebase.firestore.FieldValue.increment(1)
-          // })
+        addDoc(collection(db, 'incomes'), income).then(fallback => {
           updateIncomesInStore(dispatch, user?.userID)
           setCategoryName('')
           setSavingCat(false)
@@ -88,16 +81,13 @@ function AddIncomeCategory({ editingIncomeCategory, incomeCategoryID, editingInc
         incomeCategory,
         incomeSource,
         incomeAmount,
-        dateReceived,
-        createdAt: firebase.firestore.Timestamp.now()
+        dateReceived
       }
+      // incomeSources: arrayUnion(income)
 
-      db.collection('incomes').doc(incomeCategory).update({
-        incomeSources: firebase.firestore.FieldValue.arrayUnion(income)
-      }).then((snapshot) => {
-        // db.collection('users').doc(user?.userID).update({
-        //   todos: firebase.firestore.FieldValue.increment(1)
-        // })
+      const doc__ref = doc(db, `incomes/${incomeCategory}`);
+      updateDoc(doc__ref, { incomeSources: arrayUnion(income) }).then(fulfilled => {
+
         setIncomeCategory('')
         setIncomeSource('')
         setIncomeAmount('')
@@ -112,14 +102,17 @@ function AddIncomeCategory({ editingIncomeCategory, incomeCategoryID, editingInc
   }
 
   useEffect(() => {
-    db.collection('incomes').onSnapshot(snapshot => {
+
+    const q = query(collection(db, "incomes"), where('userID', '==', user.userID));
+    getDocs(q).then(docsSnapshot => {
       setIncomeCategories(
-        snapshot.docs.map(doc => ({
+        docsSnapshot.docs.map(doc => ({
           id: doc.id,
           name: doc.data().categoryName
         }))
       )
     })
+
   }, [])
 
   return (

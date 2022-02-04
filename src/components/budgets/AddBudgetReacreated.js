@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { IconButton, MenuItem, Select } from '@material-ui/core';
-import { db, addDoc, setDoc, updateDoc, query, serverTimestamp, collection, doc, getDoc } from '../../app/firebaseConfig'
+import { db, addDoc, updateDoc, serverTimestamp, collection, doc } from '../../app/firebaseConfig'
 
 import { Loader, Switch } from 'uiw';
 import { useSelector, useDispatch } from 'react-redux';
@@ -278,12 +278,11 @@ function AddBudgetReacreated({ editing, budgetID }) {
   }
 
   useEffect(() => {
-    console.log("BUDGET ID", budgetID)
     if (editing) {
 
       getSingleDoc('budgets', budgetID).then(doc => {
         if (doc) {
-          console.log('DOC', doc)
+
           const budget = doc.data()
           console.log('BUDGET', budget)
           setBudgetTitle(budget.title)

@@ -2,6 +2,9 @@ import React, { lazy } from 'react'
 import { FaTasks } from 'react-icons/fa';
 import { IoBookmarkOutline, IoCalendarOutline, IoCashOutline, IoCreateOutline, IoLogoUsd, IoTrendingUpOutline } from 'react-icons/io5';
 import UpdateSingleBudget from '../pages/budgets/UpdateSingleBudget';
+import UpdateSingleExpense from '../pages/expenses/UpdateSingleExpense';
+import UpdateSingleNote from '../pages/notes/UpdateSingleNote';
+import UpdateSingleTask from '../pages/tasks/UpdateSingleTask';
 
 const Home = lazy(() => import('./../pages/home/Home'));
 const Budgets = lazy(() => import('./../pages/budgets/Budgets'));
@@ -115,7 +118,7 @@ const paths = [
 
       {
         path: 'update/:id/:title/',
-        component: <SingleExpense />
+        component: <UpdateSingleExpense />
       },
 
     ],
@@ -135,7 +138,7 @@ const paths = [
       },
       {
         path: 'update/:id/:title/',
-        component: <SingleTask />
+        component: <UpdateSingleTask />
       },
     ],
   },
@@ -154,7 +157,7 @@ const paths = [
       },
       {
         path: 'update/:id/:title/',
-        component: <SingleNote />
+        component: <UpdateSingleNote />
       },
     ],
   },

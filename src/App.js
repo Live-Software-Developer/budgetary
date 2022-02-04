@@ -103,7 +103,7 @@ function App() {
 
     else {
       dispatch(
-        openSnackbar({ state: false, severity: '', message: '' })
+        openSnackbar({ state: false, severity: 'info', message: 'Snackbar closed' })
       )
     }
 

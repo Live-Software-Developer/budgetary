@@ -72,12 +72,16 @@ h6 {
 }
 
 .expense-preview {
-  flex: 0.3;
+  /* flex: 0.5; */
 }
 
 .custom-circle-btn {
   width: 45px !important;
   height: 45px !important;
+}
+
+.css-usbw7r-MuiMasonry-root {
+  flex-direction: row !important;
 }
 
 @media screen and (max-width: 768px) {
@@ -98,6 +102,6 @@ h6 {
   }
 
   .expense-preview {
-    flex: 0.5;
+    /* width: 50%; */
   }
 }

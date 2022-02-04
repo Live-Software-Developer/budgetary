@@ -4,7 +4,7 @@ import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage'
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
 import { getAnalytics } from 'firebase/analytics';
-import { getFirestore, collection, where, doc, getDocs, QuerySnapshot, query, getDoc, addDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
+import { getFirestore, collection, where, doc, getDocs, QuerySnapshot, query, getDoc, addDoc, setDoc, updateDoc, serverTimestamp, arrayUnion, onSnapshot, DocumentSnapshot } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "AIzaSyBXuIXprXvX0F7Unb2A07h3E3teTpfv_Qg",
@@ -26,7 +26,7 @@ const analytics = getAnalytics(app);
 export { analytics }
 
 // Firestore database
-export { db, collection, where, query, QuerySnapshot, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, serverTimestamp }
+export { db, collection, where, query, QuerySnapshot, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, serverTimestamp, arrayUnion, onSnapshot, DocumentSnapshot }
 
 // Storage
 export { storage }

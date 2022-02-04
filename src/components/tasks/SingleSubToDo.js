@@ -1,3 +1,4 @@
+import { Checkbox } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { IoCheckmark, IoCheckmarkDoneSharp } from "react-icons/io5";
 import { Switch } from "uiw";
@@ -16,29 +17,20 @@ function SingleSubToDo({ subtodo, displaybtn }) {
     <div className="d-flex m-1 justify-content-betwen">
       <div className="d-flex">
         <div className="mx-3 my-auto">
-          {
-            doneState === true ? <IoCheckmarkDoneSharp className="text-success" style={{ fontWeight: 500 }} />
-              :
-              <IoCheckmark style={{ opacity: 0.5, fontWeight: 500 }} />
-          }
-
+          <Checkbox disabled checked={subtodo.complete} className={subtodo.complete ? "text-success" : "t"} />
         </div>
 
         <div className="my-auto">
           {
             doneState === true ?
-              <p className="text-dark m-0 p-0" style={{ fontWeight: 500 }}>{subtodo.text}</p>
+              <p className="text-dark m-0 p-0" style={{ fontWeight: 600, fontSize: '218x' }}>{subtodo.text}</p>
               :
-              <p className="m-0 p-0" style={{ opacity: 0.5, fontWeight: 500 }}>{subtodo.text}</p>
+              <p className="m-0 p-0" style={{ opacity: 0.5, fontWeight: 600, fontSize: '18px' }}>{subtodo.text}</p>
           }
         </div>
 
       </div>
-      <div className="ml-auto">
 
-        <Switch checked={subtodo.complete} className="my-auto" value={subtodo.complete} onChange={e => (console.log('changed'))} />
-
-      </div>
     </div>
   )
 }

@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { FaPen, FaPencilAlt, FaTrash } from 'react-icons/fa'
+import { FaPencilAlt, FaTrash } from 'react-icons/fa'
 import { useNavigate, useParams } from 'react-router'
-import { DataGrid } from '@mui/x-data-grid'
-import { openModal } from '../../features/appController/AppSlice'
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectAppState } from '../../features/appController/AppSlice';
 import CustomPortalPage from '../../components/CustomPortal'
-import AddBudgetReacreated from '../../components/budgets/AddBudgetReacreated'
 import { LoaderComponent } from '../../components/LoaderLabel'
 import { CardHeader } from '../../components/MotionButton'
 
 import SingleDetails from '../../components/SingleDetail'
-import { SpeedDialAction, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
-import { Button, IconButton } from '@material-ui/core'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { IconButton } from '@material-ui/core'
+import { stringReplacer } from '../../Functions';
 
 
 function SingleBudget() {
@@ -21,7 +19,6 @@ function SingleBudget() {
   const [loading, setLoading] = useState(true)
   const { budgets } = useSelector(selectAppState)
 
-  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -35,7 +32,7 @@ function SingleBudget() {
 
 
   const update = () => {
-    navigate(`/budgets/update/${budget.id}/${budget.title}/`)
+    navigate(`/budgets/update/${budget.id}/${stringReplacer(budget.title).replace(" ", "-")}/`)
   }
 
   return (

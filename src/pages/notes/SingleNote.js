@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import ReactHtmlParser from 'react-html-parser';
-import { useDispatch, useSelector } from 'react-redux';
-import { openModal, selectAppState } from '../../features/appController/AppSlice';
-import { IoPencilSharp } from 'react-icons/io5';
+import { useSelector } from 'react-redux';
+import { selectAppState } from '../../features/appController/AppSlice';
 import CustomPortalPage from '../../components/CustomPortal';
 import { LoaderComponent } from '../../components/LoaderLabel';
 import { CardHeader } from '../../components/MotionButton';
-import AddNote from '../../components/notes/AddNote';
-import PageHolder from '../../components/page/PageHolder';
-import PageHeader from '../../components/page/PageHeader';
-import PageBody from '../../components/page/PageBody';
 
 import SingleDetails from '../../components/SingleDetail';
+import { DeleteUpdateIcons } from '../budgets/SingleBudget';
+import { stringReplacer } from '../../Functions';
 
 
 function SingleNote() {
@@ -23,9 +20,10 @@ function SingleNote() {
 
   const params = useParams()
 
-  const dispatch = useDispatch()
 
   const id = params?.id;
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     const note = notes.find(note => note.id === id)
@@ -34,15 +32,16 @@ function SingleNote() {
 
   }, [id, notes, params])
 
-  const editNote = () => {
-    const target_ = { target: 'notes', title: 'Updating note', subtitle: 'Updating note', component: <AddNote editing={true} noteID={note.id} /> };
-
-    dispatch(
-      openModal(target_)
-    )
+  const update = () => {
+    navigate(`/notes/update/${note.id}/${stringReplacer(note.title)}/`)
   }
+
   return (
-    <CustomPortalPage title={note?.title}>
+    <CustomPortalPage title={note?.title} button_={
+      <div className='d-flex'>
+        <DeleteUpdateIcons deleteFunc={update} updateFunc={update} />
+      </div>
+    }>
       {
         loading && loading === true ?
           <LoaderComponent />

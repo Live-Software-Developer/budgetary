@@ -11,24 +11,30 @@ function DashboardPreviewRow({ children, link_to, title, type, inputs_, expenses
         <h3 className="text-dark">{title}</h3>
       </Link>
 
-      <Masonry columns={3} spacing={2} children={
-        expenses && expenses?.map((expense, index) => {
+      <Masonry columns={2} spacing={2} className="">
+        {
+          expenses && expenses?.map((expense, index) => {
 
-          return (
-            <div key={index} children={<DashboardExpense expense={expense} />} />
-          )
-        })
-      } />
+            return (
+              <div key={index} className="expense-preview" children={<DashboardExpense expense={expense} />} />
+            )
+          })
+        }
+        <span></span>
+      </Masonry>
 
 
-      <Masonry columns={2} spacing={2} children={
-        inputs_?.map((budgetary_object, index) => {
+      <Masonry columns={2} spacing={2}>
+        {
+          inputs_?.map((budgetary_object, index) => {
 
-          return (
-            <div key={index} children={<DashboardPreviewCommonWidget type={type} budgetary_object={budgetary_object} />} />
-          )
-        })
-      } />
+            return (
+              <div key={index} children={<DashboardPreviewCommonWidget type={type} budgetary_object={budgetary_object} />} />
+            )
+          })
+        }
+        <span></span>
+      </Masonry>
 
       {children}
 

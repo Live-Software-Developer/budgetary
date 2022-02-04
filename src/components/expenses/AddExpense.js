@@ -2,12 +2,11 @@ import { Button, IconButton } from "@material-ui/core"
 import { DataGrid } from "@mui/x-data-grid"
 import { useEffect, useState } from "react"
 import { IoTrashBinSharp } from "react-icons/io5"
-import { Switch } from "uiw"
-import { Loader } from "uiw"
-import { db } from "../../app/firebaseConfig"
+import { Switch, Loader } from "uiw"
+
 import { closeModal, selectAppState } from "../../features/appController/AppSlice"
 import { opensnackbar_ } from "../../features/appController/QuickFunctions"
-import { updateExpensesInStore } from "../../Functions"
+import { getSingleDoc, updateExpensesInStore } from "../../Functions"
 import { StrongLabel } from "../LoaderLabel"
 import { CardHeader, MotionButton } from "../MotionButton"
 
@@ -15,6 +14,10 @@ import ReactFlipMove from 'react-flip-move'
 import firebase from 'firebase/compat/app'
 import { selectUser } from "../../features/user/UserSlice"
 import { useDispatch, useSelector } from "react-redux"
+import { ExpenseTable } from "../../pages/expenses/SingleExpense"
+
+import { db, addDoc, updateDoc, serverTimestamp, collection, doc } from '../../app/firebaseConfig'
+import { useNavigate } from "react-router"
 
 function AddExpense({ editing, expenseID }) {
 
@@ -29,6 +32,7 @@ function AddExpense({ editing, expenseID }) {
 
   const user = useSelector(selectUser)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const { expenses } = useSelector(selectAppState)
   const [existingDateExpenses, setExistingDateExpenses] = useState(null)
@@ -227,6 +231,15 @@ function AddExpense({ editing, expenseID }) {
       </div>
 
     )
+
+  }
+
+  const clearInputs = () => {
+    setExpenseItems([])
+    setTotal_(0)
+    setDate('')
+    setPreview(false)
+    setSaving(false)
   }
 
   const saveExpense = () => {
@@ -239,17 +252,16 @@ function AddExpense({ editing, expenseID }) {
 
       const previous_total = previousExpenseItems.map(item => item.total).reduce((a, b) => a + b, 0);
 
+
       const total = parseFloat(previous_total) + parseFloat(total_);
-      db.collection('expenses').doc(existingDateExpenses.id).update({
+      const exp = {
         expenseItems: combinedExpenseItems,
         expenseTotal: total
-      }).then(() => {
-        setExpenseItems([])
-        setTotal_(0)
-        setDate('')
-        setExistingDateExpenses(null)
-        setPreview(false)
-        setSaving(false)
+      }
+
+      const doc__ref = doc(db, `expenses/${expenseID}`);
+      updateDoc(doc__ref, exp).then(fulfilled => {
+        clearInputs();
         opensnackbar_(dispatch, true, 'success', 'Expense items updated Successfully')
       }).catch(err => {
         setSaving(false)
@@ -274,21 +286,14 @@ function AddExpense({ editing, expenseID }) {
           expenseItems,
           date: date,
           time: time,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          createdAt: serverTimestamp()
         }
 
         if (editing) {
-          db.collection('expenses').doc(expenseID).update(dailyExpense).then(() => {
-            setExpenseItems([])
-            setTotal_(0)
-            setDate('')
-            setPreview(false)
+          const doc__ref = doc(db, `expenses/${expenseID}`);
+          updateDoc(doc__ref, dailyExpense).then(fulfilled => {
             setSaving(false)
             opensnackbar_(dispatch, true, 'success', 'Expense Updated Successfully')
-          }).then(() => {
-            dispatch(
-              closeModal()
-            )
           }).catch(err => {
             setSaving(false)
             opensnackbar_(dispatch, true, 'error', 'Error Updating Expense items')
@@ -297,17 +302,10 @@ function AddExpense({ editing, expenseID }) {
         }
 
         else {
-          db.collection('expenses').add({
-            ...dailyExpense
-          }).then(() => {
-
-            db.collection('users').doc(user?.userID).update({
-              expenses: firebase.firestore.FieldValue.increment(1)
-            })
-
+          addDoc(collection(db, 'expenses'), dailyExpense).then(fallback => {
             setSaving(false)
             opensnackbar_(dispatch, true, 'success', 'Expense Added Successfully')
-
+            navigate(-1)
           }).catch(error => opensnackbar_(dispatch, true, 'error', `Error Adding Expense ${error}`))
         }
 
@@ -322,8 +320,10 @@ function AddExpense({ editing, expenseID }) {
 
   useEffect(() => {
     if (editing) {
-      db.collection('expenses').doc(expenseID).get().then(doc => {
+
+      getSingleDoc('expenses', expenseID).then(doc => {
         if (doc.exists) {
+
           const expense = doc.data();
           setExpenseItems(expense.expenseItems)
           setTotal_(expense.expenseTotal)
@@ -334,6 +334,8 @@ function AddExpense({ editing, expenseID }) {
           setExistingDateExpenses(expense)
         }
       })
+
+
     }
   }, [editing])
 
@@ -420,8 +422,7 @@ function AddExpense({ editing, expenseID }) {
       {
         preview && (
           <div className="w-100" style={{ height: '350px' }}>
-            <DataGrid columns={expenseHeaders} rows={expenseItems} pageSize={5}
-              rowsPerPageOptions={[5]} />
+            <ExpenseTable expenseItems={expenseItems} />
           </div>
         )
       }

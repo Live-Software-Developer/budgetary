@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { DataGrid } from '@mui/x-data-grid'
-
-import { useParams } from 'react-router';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectAppState, openModal } from '../../features/appController/AppSlice';
-import { IoPencilSharp } from 'react-icons/io5';
+import { useNavigate, useParams } from 'react-router';
+import { useSelector } from 'react-redux';
+import { selectAppState } from '../../features/appController/AppSlice';
 import CustomPortalPage from '../../components/CustomPortal';
-import PageHolder from '../../components/page/PageHolder';
 import { LoaderComponent } from '../../components/LoaderLabel';
-import PageHeader from '../../components/page/PageHeader';
-import PageBody from '../../components/page/PageBody';
 import { CardHeader } from '../../components/MotionButton';
 import SingleDetails from '../../components/SingleDetail';
-import AddExpense from '../../components/expenses/AddExpense';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { DeleteUpdateIcons } from '../budgets/SingleBudget';
 
 function SingleExpense() {
 
@@ -20,17 +15,10 @@ function SingleExpense() {
   const [loading, setLoading] = useState(true)
   const { expenses } = useSelector(selectAppState)
   const params = useParams()
-  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-
-  const editExpense = () => {
-    const target_ = { target: 'expenses', title: 'Editing an expense', subtitle: `Editing expenditure for ${expense.date}`, component: <AddExpense editing={true} expenseID={expense.id} /> };
-    console.log('editing ', expense.id)
-
-    dispatch(
-      openModal(target_)
-    )
-
+  const update = () => {
+    navigate(`/expenses/update/${expense.id}/${expense.date}/`)
   }
 
   useEffect(() => {
@@ -40,7 +28,11 @@ function SingleExpense() {
   }, [expenses, params])
 
   return (
-    <CustomPortalPage title={expense?.date}>
+    <CustomPortalPage title={expense?.date} button_={
+      <div className='d-flex'>
+        <DeleteUpdateIcons deleteFunc={update} updateFunc={update} />
+      </div>
+    }>
       <div>
         {
           loading === true ?
@@ -48,11 +40,11 @@ function SingleExpense() {
             :
 
             <div>
-              {/* <PageHeader page_ icon={<IoPencilSharp />} click={editExpense} /> */}
               <div className="p-2  mt-3 common-card ">
                 <CardHeader title="Meta data" />
                 <SingleDetails title="Date created" value={expense?.date} />
                 <SingleDetails title="Target Date" value={expense?.date} />
+                <SingleDetails title="Note" value={expense?.dayNote || "No notes"} />
                 <SingleDetails title="Total" value={expense?.expenseTotal} />
 
               </div>
@@ -60,15 +52,46 @@ function SingleExpense() {
               <div className="common-card p-2 my-3">
                 <CardHeader title="Expenses list" />
                 {
-                  expense && <div classame="w-100" style={{ height: 'auto' }}>
-                    <DataGrid columns={expense.expenseHeaders} rows={expense.expenseItems} autoHeight />
-                  </div>
+                  expense && <ExpenseTable expenseItems={expense.expenseItems} />
                 }
               </div>
             </div>
         }
       </div>
     </CustomPortalPage>
+  )
+}
+
+export const ExpenseTable = ({ expenseItems }) => {
+
+  return (
+    <TableContainer>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell >ID</TableCell>
+            <TableCell >Particular/ Description</TableCell>
+            <TableCell >Quantity</TableCell>
+            <TableCell >Price/Unit</TableCell>
+            <TableCell >Total</TableCell>
+
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {
+            expenseItems.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell>{item.id}</TableCell>
+                <TableCell>{item.part}</TableCell>
+                <TableCell>{item.qty}</TableCell>
+                <TableCell>{item.pu}</TableCell>
+                <TableCell>{item.total}</TableCell>
+              </TableRow>
+            ))
+          }
+        </TableBody>
+      </Table>
+    </TableContainer>
   )
 }
 

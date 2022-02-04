@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { IoPencilSharp } from 'react-icons/io5';
 import { selectAppState } from '../../features/appController/AppSlice';
@@ -17,6 +17,8 @@ import { CardHeader } from '../../components/MotionButton';
 
 import SingleDetails from '../../components/SingleDetail';
 import SingleSubToDo from '../../components/tasks/SingleSubToDo';
+import { DeleteUpdateIcons } from '../budgets/SingleBudget';
+import { stringReplacer } from '../../Functions';
 
 
 function SingleTask() {
@@ -27,6 +29,7 @@ function SingleTask() {
 
   const params = useParams()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const id = params?.id;
@@ -36,16 +39,16 @@ function SingleTask() {
 
   }, [params, tasks])
 
-  const editTask = () => {
-    const target_ = { target: 'tasks', title: 'Editing a task', subtitle: `Editing ${task.title}`, component: <AddTask editing={true} taskID={task.id} /> };
-
-    dispatch(
-      openModal(target_)
-    )
+  const update = () => {
+    navigate(`/tasks/update/${task.id}/${stringReplacer(task.title).replace(" ", "-")}/`)
   }
 
   return (
-    <CustomPortalPage title={task?.title}>
+    <CustomPortalPage title={task?.title} button_={
+      <div className='d-flex'>
+        <DeleteUpdateIcons deleteFunc={update} updateFunc={update} />
+      </div>
+    }>
 
       {
         loading && loading === true ?

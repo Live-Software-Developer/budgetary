@@ -240,6 +240,15 @@ const holderText = `Nice message to illustrate html input elements h1, h2, h3, p
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
 </blockquote>`;
 
+const stringReplacer = (str) => {
+  // str.replace(/[^a-zA-Z ]/g, "")
+  // str.replace(/\s+/g, " ")
+  // str.
+  // replace all characters in a string with a space
+  const st = str
+  st.replace(/[^a-zA-Z ]/g, "")
 
+  return str.replace(/[^a-zA-Z ]/g, "").replace(/\s/g, "-");
+}
 
-export { quick_actions, setter_func, MakeAppRoutes, updateNotesInStore, holderText, updateBudgetsInStore, updateTasksInStore, updateIncomesInStore, updateExpensesInStore };
+export { quick_actions, setter_func, MakeAppRoutes, updateNotesInStore, holderText, updateBudgetsInStore, updateTasksInStore, updateIncomesInStore, updateExpensesInStore, stringReplacer };
