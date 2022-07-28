@@ -1,0 +1,107 @@
+* {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.nav-popover .w-popover-inner {
+  border-radius: var(--theme-border-radius-larger);
+  border: none !important;
+  box-shadow: var(--theme-box-shadow-larger);
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.custom-portal {
+  background-color: white;
+  width: 80%;
+  height: 95%;
+  /* margin: auto; */
+  /* padding: 10px; */
+  border-radius: 20px;
+  position: relative;
+  outline: none;
+  overflow-x: hidden;
+}
+
+.custom-portal-modal-header {
+  height: 60px;
+  position: relative;
+  box-shadow: var(--theme-box-shadow);
+}
+
+.custom-portal-modal-body {
+  height: calc(100% - 60px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+}
+
+.sbr {
+  border-radius: 10px;
+}
+
+.lbr {
+  border-radius: 20px;
+}
+
+.update {
+  border-radius: 50px !important;
+  background: var(--theme-primary-color) !important;
+  color: white !important;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 5px;
+  width: 120px;
+  margin: 20px auto !important;
+}
+
+.expense-preview {
+  /* flex: 0.5; */
+}
+
+.custom-circle-btn {
+  width: 45px !important;
+  height: 45px !important;
+}
+
+.css-usbw7r-MuiMasonry-root {
+  flex-direction: row !important;
+}
+
+@media screen and (max-width: 768px) {
+  .custom-page-inner {
+    border-radius: 0;
+    box-shadow: none;
+    padding-bottom: 60px;
+  }
+
+  .custom-portal,
+  .custom-email-portal,
+  .custom-document-portal {
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .expense-preview {
+    /* width: 50%; */
+  }
+}

@@ -1,0 +1,29 @@
+Hello there!
+This is Dalmas from LSD bringing you the best from the world of react
+We are going to build a budgetary app to help track
+ - Budgets
+ - Daily Expenses
+ - Notes
+ - And other related stuff
+
+Functionality
+	- Ability to share notes
+	- Ability to share expenses
+	- Ability to merge expenses with other users
+	- Ability to follow on budgets
+
+We are going to start with 
+ > starting a react project
+	% npx creat-react-app budgetary --template redux
+ > Installing required dependencies
+	% npm i --save reactdom react-router-dom uiw @material-ui/core bootstrap react-ionicons react-flip-move firebase
+ > We then fire our app using:
+	% npm start
+ > Follow it to the browser
+	...http://localhost:3000/
+ > We are good to go now
+
+ ---- STAY TUNED TO THE END OF THIS PROJECT
+ IT WANNA BE LIT
+
+		THANK YOU!!!

@@ -1,0 +1,50 @@
+Hello guys?
+This is Dalmas from LSD Bringing you the best in the world of IT
+Today we are going to build a react project called 'Budgetary' from scratch using varius resources such as 
+	- React - redux template
+	- Firebase
+	- & NPM libraries/dependencies like
+		> react-dom
+		> react-router-dom
+		> react-ionicons
+		> @material-ui/core
+		> uiw
+		> react-flip-move
+		> bootstrap
+		> & etc
+What will we achieve at the end
+	- A working budgetary application
+
+Functionality
+	- Ability to add expenses/merge with other users/ delete/ update/ share
+	- Ability to make a budget/update/delete/share
+	- Ability to store notes/update/delete/share
+	- Others
+
+PROCEDURE:
+	> Open terminal
+		% npx create-react-app budgetary --template redux
+		% cd budgetary
+		% npm i --save firebase react-dom react-router-dom react-flip-move bootstrap react-ionicons uiw @material-ui/core
+		% npm start
+	> Everything will be up and running if you followed the above procedures
+
+
+
+>>>> now let us graphically see this in action
+ ......
+
+
+ >>>> we now have a running react app from a react redux template
+ >>>> THANK YOU FOR WATCHING. STAY TUNED TILL THE END for what you will learn or add to your knowledge is worth it.
+
+
+		>> please subscribe and like this video!!
+
+
+
+
+
+		
+
+
